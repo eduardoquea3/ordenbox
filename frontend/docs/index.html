@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f6">
+  <title>Norte — objetos para todos los días</title>
+  <style>
+    /* OD-LAYOUT-PRIMITIVES v1 — structure only: display, flex/grid, overflow, wrapping, ratio, geometry.
+       Put this @layer first; product CSS outside the layer wins ordinary layout rules.
+       Native hidden and closed-dialog states take precedence over component display rules. */
+    @layer od-layout {
+      [hidden]:not([hidden="until-found" i]) { display: none !important; }
+      dialog:not([open]) { display: none !important; }
+      :where(.od-stack,.od-row,.od-row-top,.od-cluster,.od-grid,.od-field,.od-stat,.od-cell,.od-tile) > :where(*) { min-width: 0; }
+      .od-stack { display:flex; flex-direction:column; gap:var(--od-gap,8px); }
+      .od-row { display:flex; align-items:center; gap:var(--od-gap,8px); }
+      .od-row-top { display:flex; align-items:flex-start; gap:var(--od-gap,8px); }
+      .od-cluster { display:flex; flex-wrap:wrap; align-items:center; gap:var(--od-gap,8px); }
+      .od-fill { flex:1 1 0; min-width:0; }
+      .od-fixed { flex:none; }
+      .od-grid { display:grid; gap:var(--od-gap,12px); grid-template-columns:repeat(var(--od-cols,3),minmax(0,1fr)); }
+      .od-stat,.od-field,.od-cell { display:grid; gap:var(--od-gap,2px); }
+      :where(.od-stat,.od-field,.od-cell) > :where(*) { display:block; }
+      .od-tile { display:grid; grid-template-rows:auto 1fr; }
+      :where(.od-tile) > :where(*) { display:block; }
+      .od-media { display:block; width:100%; height:auto; aspect-ratio:var(--od-ratio,auto); }
+      .od-media-cover { object-fit:cover; }
+      .od-icon { display:inline-block; inline-size:var(--od-icon-size,1em); block-size:var(--od-icon-size,1em); flex:none; }
+      .od-truncate { display:block; max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+      .od-clamp-2,.od-clamp-3 { display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+      .od-clamp-2 { -webkit-line-clamp:2; }
+      .od-clamp-3 { -webkit-line-clamp:3; }
+      .od-nowrap { white-space:nowrap; }
+      .od-keep { word-break:keep-all; overflow-wrap:anywhere; }
+      .od-screen { display:grid; grid-template-rows:auto minmax(0,1fr) auto; height:100%; }
+      .od-scroll { overflow-y:auto; overscroll-behavior:contain; min-height:0; }
+      .od-rail { display:flex; gap:var(--od-gap,8px); overflow-x:auto; scroll-snap-type:x proximity; scrollbar-width:none; padding-inline:var(--od-rail-pad,16px); scroll-padding-inline:var(--od-rail-pad,16px); }
+      .od-rail::-webkit-scrollbar { display:none; }
+      :where(.od-rail) > :where(*) { flex:none; scroll-snap-align:start; }
+      :where(.od-rail) > :where(:last-child) { margin-inline-end:var(--od-rail-pad,16px); }
+      .od-spacer { flex:none; visibility:hidden; pointer-events:none; }
+      .od-touch { min-width:44px; min-height:44px; }
+    }
+    /* /OD-LAYOUT-PRIMITIVES v1 */
+    :root {
+      color-scheme: light;
+      --paper:#f7f8f6; --ink:#17231f; --muted:#68736e; --line:#dce2de;
+      --green:#d7e8df; --green-deep:#245d49; --blue:#385fce; --blue-soft:#e4eaff;
+      --coral:#f0a184; --sun:#f3cf68; --white:#fff; --serif:Georgia,'Times New Roman',serif;
+      --sans:Arial,Helvetica,sans-serif; --space:8px;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 var(--sans); }
+    a { color:inherit; text-decoration:none; }
+    button { color:inherit; font:inherit; }
+    button:focus-visible,a:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+    .wrap { width:min(1160px, calc(100% - 64px)); margin-inline:auto; }
+    .announcement { padding:8px 16px; background:var(--ink); color:#fff; text-align:center; font-size:12px; letter-spacing:.04em; }
+    .site-header { background:var(--paper); border-bottom:1px solid var(--line); }
+    .header-main { min-height:80px; display:flex; align-items:center; justify-content:space-between; gap:28px; }
+    .brand { display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:.12em; font-size:19px; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; background:var(--blue); color:white; font-family:var(--serif); font-size:20px; }
+    .nav { display:flex; gap:30px; align-items:center; font-size:14px; }
+    .nav a { color:#44504a; }
+    .nav a:hover { color:var(--blue); }
+    .header-tools { display:flex; align-items:center; gap:16px; }
+    .icon-button { border:0; background:transparent; display:grid; place-items:center; width:44px; height:44px; cursor:pointer; position:relative; }
+    .icon-button svg { width:21px; height:21px; }
+    .bag-count { position:absolute; top:0; right:0; min-width:17px; height:17px; border-radius:50%; background:var(--blue); color:white; font-size:10px; line-height:17px; text-align:center; }
+    .menu-button { display:none; }
+    .hero { margin:32px auto 0; min-height:390px; background:var(--green); display:grid; grid-template-columns:1.03fr .97fr; overflow:hidden; }
+    .hero-copy { padding:64px 10px 56px 64px; align-self:center; }
+    .eyebrow { color:var(--green-deep); text-transform:uppercase; letter-spacing:.15em; font-size:11px; font-weight:700; }
+    .hero h1 { font:clamp(40px,5vw,68px)/.99 var(--serif); letter-spacing:-.045em; max-width:530px; margin:19px 0 18px; }
+    .hero p { max-width:390px; color:#40584d; margin:0 0 28px; }
+    .primary { display:inline-flex; min-height:48px; align-items:center; justify-content:center; padding:0 23px; background:var(--blue); color:white; border:1px solid var(--blue); font-size:14px; font-weight:700; cursor:pointer; transition:background .18s, transform .18s; }
+    .primary:hover { background:#294bb0; transform:translateY(-1px); }
+    .hero-art { min-height:390px; position:relative; display:flex; align-items:center; justify-content:center; background:var(--coral); overflow:hidden; }
+    .hero-art::before { content:""; position:absolute; width:340px; height:340px; border-radius:50%; background:var(--sun); right:6%; top:10%; }
+    .hero-art::after { content:"N"; position:absolute; inset:auto 0 13px; text-align:center; font:italic 260px/.8 var(--serif); color:#233a30; opacity:.12; }
+    .hero-object { position:relative; z-index:1; width:220px; height:270px; background:#284c3d; border-radius:46% 46% 10px 10px; transform:rotate(-7deg); box-shadow:18px 18px 0 rgba(23,35,31,.12); }
+    .hero-object::before { content:""; position:absolute; width:110px; height:100px; border:12px solid #284c3d; border-bottom:0; border-radius:70px 70px 0 0; top:-80px; left:48px; }
+    .hero-object::after { content:"NORTE"; position:absolute; inset:55% 0 auto; text-align:center; color:#e4c778; font:18px var(--serif); letter-spacing:.25em; }
+    .hero-note { position:absolute; z-index:2; right:24px; bottom:22px; background:var(--paper); padding:9px 13px; font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+    .section { padding-top:74px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:25px; }
+    .section-head h2 { margin:4px 0 0; font:36px/1.1 var(--serif); letter-spacing:-.025em; }
+    .section-head p { margin:0; color:var(--muted); font-size:13px; }
+    .categories { display:grid; grid-template-columns:repeat(4,1fr); border-block:1px solid var(--line); }
+    .category { display:flex; align-items:center; gap:15px; padding:18px 20px; min-height:88px; border:0; border-right:1px solid var(--line); background:transparent; text-align:left; cursor:pointer; transition:background .18s; }
+    .category:last-child { border-right:0; }
+    .category:hover,.category[aria-pressed="true"] { background:var(--blue-soft); }
+    .category-icon { width:42px; height:42px; flex:none; display:grid; place-items:center; background:#fff; color:var(--blue); }
+    .category-icon svg { width:22px; height:22px; }
+    .category strong { display:block; font-size:14px; }
+    .category small { display:block; color:var(--muted); font-size:11px; }
+    .products { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px 18px; }
+    .product[hidden] { display:none; }
+    .product-visual { position:relative; aspect-ratio: .88; display:grid; place-items:center; overflow:hidden; }
+    .product-visual::before { content:""; position:absolute; width:68%; height:68%; border-radius:50%; background:rgba(255,255,255,.46); }
+    .visual-1 { background:#e8dfd1; }.visual-2 { background:#dce6eb; }.visual-3 { background:#d4e0d7; }.visual-4 { background:#eee3cb; }
+    .visual-5 { background:#e8d9d4; }.visual-6 { background:#dce1ee; }.visual-7 { background:#e5e2d7; }.visual-8 { background:#d7e5e4; }
+    .shape { position:relative; z-index:1; display:block; }
+    .shoe { width:68%; height:26%; background:#fff; border-radius:56% 24% 15% 28%; transform:rotate(-9deg); box-shadow:inset 0 -8px #d8d8d4,0 12px 18px #0001; }
+    .shoe::after { content:""; position:absolute; width:44%; border-top:2px solid #aeb3b0; top:34%; left:36%; transform:rotate(12deg); box-shadow:0 7px #aeb3b0; }
+    .tote { width:46%; height:53%; background:#c6aa7c; border-radius:4px 4px 8px 8px; box-shadow:0 12px 20px #0002; }
+    .tote::before { content:""; position:absolute; width:42%; height:28%; border:7px solid #c6aa7c; border-bottom:0; border-radius:30px 30px 0 0; top:-26%; left:29%; }
+    .shirt { width:65%; height:62%; background:#557aa4; clip-path:polygon(27% 0,43% 10%,57% 10%,73% 0,100% 17%,84% 40%,75% 32%,75% 100%,25% 100%,25% 32%,16% 40%,0 17%); filter:drop-shadow(0 12px 8px #0002); }
+    .glasses { width:74%; height:22%; display:flex; gap:8%; align-items:center; }
+    .glasses::before,.glasses::after { content:""; width:42%; height:100%; border:8px solid #222a2b; border-radius:10px 10px 18px 18px; }
+    .mug { width:40%; height:45%; border-radius:5px 5px 24px 24px; background:#bd6c52; box-shadow:0 12px 18px #0002; }
+    .mug::after { content:""; position:absolute; width:35%; height:38%; border:7px solid #bd6c52; border-left:0; border-radius:0 18px 18px 0; right:-27%; top:14%; }
+    .lamp { width:12%; height:49%; background:#414e76; margin-top:42%; }
+    .lamp::before { content:""; position:absolute; width:220%; height:38%; background:#e7c665; clip-path:polygon(25% 0,75% 0,100% 100%,0 100%); left:-60%; top:-35%; }
+    .bag { width:54%; height:46%; background:#9c6544; border-radius:12px 12px 8px 8px; box-shadow:0 12px 18px #0002; }
+    .bag::before { content:""; position:absolute; width:48%; height:26%; border:7px solid #9c6544; border-bottom:0; border-radius:30px 30px 0 0; top:-25%; left:26%; }
+    .earrings { width:60%; height:60%; display:flex; justify-content:center; gap:17%; }
+    .earrings::before,.earrings::after { content:""; width:28%; height:53%; border:7px solid #bb9d56; border-radius:50%; margin-top:20%; }
+    .product-flag { position:absolute; top:12px; left:12px; z-index:2; background:#fff; padding:5px 9px; font-size:10px; letter-spacing:.06em; }
+    .product-info { padding-top:12px; display:grid; grid-template-columns:1fr auto; gap:3px 8px; align-items:center; }
+    .product-name { font-size:14px; font-weight:700; }
+    .product-category { color:var(--muted); font-size:11px; }
+    .price { grid-column:2; grid-row:1/3; font-size:13px; font-weight:700; }
+    .add { margin-top:10px; width:100%; min-height:42px; border:1px solid var(--line); background:transparent; font-size:12px; cursor:pointer; transition:all .18s; }
+    .add:hover { border-color:var(--ink); background:var(--ink); color:#fff; }
+    .benefits { margin-top:84px; display:grid; grid-template-columns:repeat(3,1fr); background:var(--ink); color:#fff; }
+    .benefit { min-height:130px; padding:28px; display:flex; align-items:center; gap:16px; border-right:1px solid #ffffff30; }
+    .benefit:last-child { border:0; }
+    .benefit-icon { width:44px; height:44px; display:grid; place-items:center; background:#2e3e37; color:#d6e8df; flex:none; }
+    .benefit-icon svg { width:22px; height:22px; }
+    .benefit strong { display:block; font:21px var(--serif); }
+    .benefit span { color:#c5d0cb; font-size:12px; }
+    .newsletter { margin:80px auto; display:flex; justify-content:space-between; gap:30px; align-items:center; border-block:1px solid var(--line); padding:30px 0; }
+    .newsletter h2 { margin:0 0 4px; font:30px var(--serif); }
+    .newsletter p { margin:0; color:var(--muted); font-size:13px; }
+    .newsletter-form { display:flex; gap:8px; }
+    .newsletter input { width:260px; min-height:46px; border:1px solid var(--line); padding:0 14px; font:14px var(--sans); background:#fff; }
+    .newsletter button { min-height:46px; border:0; padding:0 18px; background:var(--ink); color:#fff; font-size:13px; cursor:pointer; }
+    .footer { background:#edf0ed; padding:36px 0 22px; }
+    .footer-main { display:flex; justify-content:space-between; gap:32px; padding-bottom:30px; }
+    .footer-note { color:var(--muted); font-size:12px; max-width:250px; }
+    .footer-links { display:flex; gap:56px; }
+    .footer-links strong { display:block; font-size:12px; margin-bottom:10px; }
+    .footer-links a { display:block; color:var(--muted); font-size:12px; margin:5px 0; }
+    .footer-bottom { display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:11px; }
+    .toast { position:fixed; z-index:10; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ink); color:white; padding:12px 18px; font-size:13px; box-shadow:0 6px 24px #0002; }
+    @media (max-width:900px) {
+      .wrap { width:min(100% - 40px,720px); }
+      .nav { gap:18px; }
+      .hero-copy { padding-left:36px; }
+      .products { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .benefit { padding:22px 18px; }
+      .footer-links { gap:28px; }
+    }
+    @media (max-width:600px) {
+      .wrap { width:calc(100% - 32px); }
+      .announcement { font-size:10px; }
+      .header-main { min-height:64px; gap:10px; }
+      .brand { font-size:16px; }
+      .brand-mark { width:28px; height:28px; }
+      .nav { display:none; }
+      .header-tools { gap:2px; }
+      .menu-button { display:grid; }
+      .hero { margin-top:16px; grid-template-columns:1fr; }
+      .hero-copy { padding:35px 24px 27px; }
+      .hero h1 { font-size:46px; max-width:350px; }
+      .hero p { font-size:14px; }
+      .hero-art { min-height:230px; }
+      .hero-art::before { width:210px; height:210px; right:16%; top:4%; }
+      .hero-object { width:138px; height:170px; }
+      .hero-object::before { width:70px; height:64px; border-width:8px; top:-51px; left:30px; }
+      .hero-object::after { font-size:13px; }
+      .hero-art::after { font-size:180px; }
+      .hero-note { right:12px; bottom:12px; font-size:9px; }
+      .section { padding-top:52px; }
+      .section-head { align-items:start; flex-direction:column; gap:7px; margin-bottom:18px; }
+      .section-head h2 { font-size:30px; }
+      .categories { grid-template-columns:repeat(2,1fr); }
+      .category { min-height:72px; padding:12px 8px; gap:9px; border-bottom:1px solid var(--line); }
+      .category:nth-child(2) { border-right:0; }
+      .category:nth-child(n+3) { border-bottom:0; }
+      .category-icon { width:36px; height:36px; }
+      .category strong { font-size:12px; }
+      .category small { font-size:10px; }
+      .products { gap:22px 12px; }
+      .product-name { font-size:13px; }
+      .product-category,.price { font-size:10px; }
+      .product-flag { top:8px; left:8px; font-size:9px; }
+      .add { min-height:44px; }
+      .benefits { margin-top:56px; grid-template-columns:1fr; }
+      .benefit { min-height:82px; padding:16px 20px; border-right:0; border-bottom:1px solid #ffffff30; }
+      .benefit strong { font-size:18px; }
+      .newsletter { margin:54px auto; align-items:stretch; flex-direction:column; gap:18px; }
+      .newsletter h2 { font-size:26px; }
+      .newsletter-form { width:100%; }
+      .newsletter input { width:100%; min-width:0; }
+      .newsletter button { padding:0 12px; }
+      .footer-main { flex-direction:column; }
+      .footer-links { justify-content:space-between; gap:18px; }
+      .footer-bottom { gap:12px; flex-direction:column; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <!-- <div class="announcement">Envío gratis en compras desde S/ 250 · Lima y todo el Perú</div> -->
+  <header class="site-header">
+    <div class="wrap header-main">
+      <a class="brand" href="#inicio" aria-label="Norte, inicio"><span class="brand-mark" aria-hidden="true">N</span> NORTE</a>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="#catalogo">Catálogo</a><a href="#categorias">Categorías</a><a href="#beneficios">Nuestra promesa</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-button" type="button" aria-label="Buscar productos" id="searchButton"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.2 4.2"/></svg></button>
+        <button class="icon-button" type="button" aria-label="Bolsa de compras, 0 productos" id="bagButton"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="bag-count" id="bagCount">0</span></button>
+        <button class="icon-button menu-button" type="button" aria-label="Abrir navegación" id="menuButton"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </div>
+    </div>
+    <div class="wrap" id="mobileNav" hidden><nav class="od-stack" aria-label="Navegación móvil" style="padding:0 0 16px"><a href="#catalogo">Catálogo</a><a href="#categorias">Categorías</a><a href="#beneficios">Nuestra promesa</a></nav></div>
+  </header>
+  <main id="inicio">
+    <section class="wrap hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><span class="eyebrow">Piezas para el día a día</span><h1 id="hero-title">Menos cosas.<br>Mejores cosas.</h1><p>Diseño honesto, materiales que acompañan y pequeños detalles que hacen más simple cada día.</p><a class="primary" href="#catalogo">Ver catálogo</a></div>
+      <div class="hero-art" role="img" aria-label="Ilustración gráfica de una bolsa de compras Norte"><span class="hero-object" aria-hidden="true"></span><span class="hero-note">Hecho para durar</span></div>
+    </section>
+    <section class="wrap section" id="categorias" aria-labelledby="categories-title">
+      <div class="section-head"><div><span class="eyebrow">Encuentra tu favorito</span><h2 id="categories-title">Compra por categoría</h2></div><p>Objetos útiles, elegidos con intención.</p></div>
+      <div class="categories">
+        <button class="category" type="button" data-filter="calzado" aria-pressed="false"><span class="category-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 15c4 0 5-5 7-5 1 3 4 4 8 4 2 0 3 1 3 3v2H3v-4Z"/></svg></span><span><strong>Calzado</strong><small>Pasos cómodos</small></span></button>
+        <button class="category" type="button" data-filter="accesorios" aria-pressed="false"><span class="category-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg></span><span><strong>Accesorios</strong><small>Detalles con uso</small></span></button>
+        <button class="category" type="button" data-filter="ropa" aria-pressed="false"><span class="category-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z"/></svg></span><span><strong>Ropa</strong><small>Básicos versátiles</small></span></button>
+        <button class="category" type="button" data-filter="casa" aria-pressed="false"><span class="category-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 11 9-7 9 7v9H3v-9Z"/><path d="M9 20v-6h6v6"/></svg></span><span><strong>Casa</strong><small>Un lugar más tuyo</small></span></button>
+      </div>
+    </section>
+    <section class="wrap section" id="catalogo" aria-labelledby="products-title">
+      <div class="section-head"><div><span class="eyebrow">Favoritos de la comunidad</span><h2 id="products-title">Piezas destacadas</h2></div><p id="resultCount" aria-live="polite">8 productos</p></div>
+      <div class="products" id="productGrid">
+        <article class="product od-tile" data-category="calzado"><div class="product-visual visual-1"><span class="product-flag">Más elegido</span><span class="shape shoe" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Zapatilla Alba</span><span class="product-category">Calzado · Blanco</span><span class="price">S/ 189</span></div><button class="add" type="button" data-product="Zapatilla Alba">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="accesorios"><div class="product-visual visual-2"><span class="shape tote" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Bolso Tana</span><span class="product-category">Accesorios · Lona</span><span class="price">S/ 129</span></div><button class="add" type="button" data-product="Bolso Tana">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="ropa"><div class="product-visual visual-3"><span class="product-flag">Nuevo</span><span class="shape shirt" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Camisa Río</span><span class="product-category">Ropa · Algodón</span><span class="price">S/ 159</span></div><button class="add" type="button" data-product="Camisa Río">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="accesorios"><div class="product-visual visual-4"><span class="shape glasses" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Lentes Sol</span><span class="product-category">Accesorios · Óptica</span><span class="price">S/ 119</span></div><button class="add" type="button" data-product="Lentes Sol">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="casa"><div class="product-visual visual-5"><span class="shape mug" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Taza Bruma</span><span class="product-category">Casa · Cerámica</span><span class="price">S/ 49</span></div><button class="add" type="button" data-product="Taza Bruma">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="casa"><div class="product-visual visual-6"><span class="shape lamp" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Lámpara Nube</span><span class="product-category">Casa · Metal</span><span class="price">S/ 219</span></div><button class="add" type="button" data-product="Lámpara Nube">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="accesorios"><div class="product-visual visual-7"><span class="shape bag" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Bandolera Marea</span><span class="product-category">Accesorios · Cuero</span><span class="price">S/ 249</span></div><button class="add" type="button" data-product="Bandolera Marea">Añadir a la bolsa</button></article>
+        <article class="product od-tile" data-category="accesorios"><div class="product-visual visual-8"><span class="shape earrings" aria-hidden="true"></span></div><div class="product-info"><span class="product-name">Aros Círculo</span><span class="product-category">Accesorios · Plata</span><span class="price">S/ 89</span></div><button class="add" type="button" data-product="Aros Círculo">Añadir a la bolsa</button></article>
+      </div>
+    </section>
+    <section class="wrap benefits" id="beneficios" aria-label="Beneficios de compra">
+      <div class="benefit"><span class="benefit-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h11v11H3zM14 11h4l3 3v4h-7z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="17.5" cy="19" r="1.5"/></svg></span><div><strong>Envíos a tu ritmo</strong><span>Despachamos a todo el Perú</span></div></div>
+      <div class="benefit"><span class="benefit-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg></span><div><strong>Pago seguro</strong><span>Tus datos, siempre protegidos</span></div></div>
+      <div class="benefit"><span class="benefit-icon"><svg class="od-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13H3v4a2 2 0 0 0 2 2h2v-6H4ZM20 13h1v4a2 2 0 0 1-2 2h-2v-6h3ZM12 19h3"/></svg></span><div><strong>Estamos para ayudarte</strong><span>Soporte cercano cuando lo necesites</span></div></div>
+    </section>
+    <section class="wrap newsletter" aria-labelledby="newsletter-title"><div><h2 id="newsletter-title">Una nota de vez en cuando</h2><p>Novedades, ideas y piezas nuevas. Sin llenar tu bandeja.</p></div><form class="newsletter-form" id="newsletterForm"><label class="od-fill" for="email" hidden>Correo electrónico</label><input id="email" type="email" placeholder="Tu correo electrónico" aria-label="Tu correo electrónico" required><button type="submit">Quiero recibirla</button></form></section>
+  </main>
+  <footer class="footer"><div class="wrap"><div class="footer-main"><div><a class="brand" href="#inicio"><span class="brand-mark" aria-hidden="true">N</span> NORTE</a><p class="footer-note">Elegimos menos, cuidamos más. Objetos para acompañar tus días.</p></div><div class="footer-links"><div><strong>Explora</strong><a href="#catalogo">Catálogo</a><a href="#categorias">Categorías</a></div><div><strong>Te ayudamos</strong><a href="#beneficios">Envíos y cambios</a><a href="#beneficios">Contacto</a></div><div><strong>Encuéntranos</strong><a href="#inicio">Instagram</a><a href="#inicio">TikTok</a></div></div></div><div class="footer-bottom"><span>© 2026 Norte. Marca de ejemplo.</span><span>Precios y promesas ilustrativos para esta propuesta.</span></div></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script>
+    const productCards = [...document.querySelectorAll('.product')];
+    const filterButtons = [...document.querySelectorAll('[data-filter]')];
+    const resultCount = document.querySelector('#resultCount');
+    const toast = document.querySelector('#toast');
+    const bagCount = document.querySelector('#bagCount');
+    const bagButton = document.querySelector('#bagButton');
+    let bagItems = 0;
+    let toastTimer;
+
+    function announce(message) {
+      toast.textContent = message;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 2400);
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.filter;
+        const isActive = button.getAttribute('aria-pressed') === 'true';
+        const filter = isActive ? '' : selected;
+        filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button && !isActive)));
+        let visible = 0;
+        productCards.forEach((card) => {
+          const matches = !filter || card.dataset.category === filter;
+          card.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        resultCount.textContent = `${visible} ${visible === 1 ? 'producto' : 'productos'}`;
+        document.querySelector('#catalogo').scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    });
+
+    document.querySelector('#productGrid').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-product]');
+      if (!button) return;
+      bagItems += 1;
+      bagCount.textContent = String(bagItems);
+      bagButton.setAttribute('aria-label', `Bolsa de compras, ${bagItems} ${bagItems === 1 ? 'producto' : 'productos'}`);
+      announce(`${button.dataset.product} se añadió a tu bolsa`);
+    });
+
+    document.querySelector('#searchButton').addEventListener('click', () => {
+      announce('Explora las categorías para encontrar tu próxima pieza');
+      document.querySelector('#categorias').scrollIntoView({behavior:'smooth'});
+    });
+    bagButton.addEventListener('click', () => announce(bagItems ? `Tu bolsa tiene ${bagItems} ${bagItems === 1 ? 'producto' : 'productos'}` : 'Tu bolsa está vacía'));
+
+    const mobileNav = document.querySelector('#mobileNav');
+    document.querySelector('#menuButton').addEventListener('click', (event) => {
+      mobileNav.hidden = !mobileNav.hidden;
+      event.currentTarget.setAttribute('aria-expanded', String(!mobileNav.hidden));
+    });
+    mobileNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => { mobileNav.hidden = true; }));
+
+    document.querySelector('#newsletterForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.querySelector('#email');
+      if (!email.reportValidity()) return;
+      announce('Gracias. Te avisaremos cuando haya novedades.');
+      event.currentTarget.reset();
+    });
+  </script>
+</body>
+</html>
