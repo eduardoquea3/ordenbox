@@ -1,0 +1,312 @@
+<header class="w-full border-b border-border">
+  <div class="w-6xl max-w-full mx-auto flex items-center justify-between gap-7 min-h-20">
+    <a class="flex items-center gap-2 font-bold text-xl" href="#inicio" aria-label="Norte, inicio"
+      ><span
+        class="grid place-items-center size-8 bg-primary text-secondary font-serif"
+        aria-hidden="true"
+        >N</span
+      >
+      NORTE</a
+    >
+    <nav class="flex gap-8 items-center text-sm">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#categorias">Categorías</a>
+      <a href="#beneficios">Beneficios</a>
+    </nav>
+    <div class="flex items-center gap-4 max-[600px]:gap-0.5">
+      <app-icon name="search" label="Buscar productos" />
+      <app-icon name="shopping-bag" label="Bolsa de compras, 0 productos">
+        <span
+          class="absolute top-0 right-0 min-w-4 h-4 rounded-full bg-primary text-white text-xs leading-4 text-center"
+          >0</span
+        >
+      </app-icon>
+      <app-icon name="menu" label="Abrir navegación" [mobileOnly]="true" />
+    </div>
+  </div>
+</header>
+<main>
+  <section
+    class="w-6xl max-w-full mx-auto mt-4 grid grid-cols-2 m-8 min-h-98 bg-secondary overflow-hidden"
+    aria-labelledby="hero-title"
+  >
+    <div class="hero-copy pt-16 pr-2.5 pb-14 pl-16 self-center">
+      <span class="text-secondary-foreground uppercase text-xs font-bold"
+        >Piezas para el día a día</span
+      >
+      <h1
+        id="hero-title"
+        class="text-5xl md:text-6xl leading-none tracking-tight max-w-xl mt-5 mb-4 font-serif"
+      >
+        Menos cosas.<br />Mejores cosas.
+      </h1>
+      <p class="max-w-98 mb-7">
+        Diseño honesto, materiales que acompañan y pequeños detalles que hacen más simple cada día.
+      </p>
+      <a class="primary" href="#catalogo">Ver catálogo</a>
+    </div>
+    <div
+      class="hero-art min-h-98 relative flex items-center justify-center bg-chart-3 overflow-hidden"
+      role="img"
+      aria-label="Ilustración gráfica de una bolsa de compras Norte"
+    >
+      <span class="hero-object" aria-hidden="true"></span
+      ><span class="hero-note">Hecho para durar</span>
+    </div>
+  </section>
+  <section class="wrap section hidden" id="categorias" aria-labelledby="categories-title">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Encuentra tu favorito</span>
+        <h2 id="categories-title">Compra por categoría</h2>
+      </div>
+      <p>Objetos útiles, elegidos con intención.</p>
+    </div>
+    <div class="categories">
+      <button class="category" type="button" data-filter="calzado" aria-pressed="false">
+        <span class="category-icon"
+          ><svg
+            class="od-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="M3 15c4 0 5-5 7-5 1 3 4 4 8 4 2 0 3 1 3 3v2H3v-4Z" /></svg></span
+        ><span><strong>Calzado</strong><small>Pasos cómodos</small></span>
+      </button>
+      <button class="category" type="button" data-filter="accesorios" aria-pressed="false">
+        <span class="category-icon"
+          ><svg
+            class="od-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="M5 8h14l1 12H4L5 8Z" />
+            <path d="M9 9V6a3 3 0 0 1 6 0v3" /></svg></span
+        ><span><strong>Accesorios</strong><small>Detalles con uso</small></span>
+      </button>
+      <button class="category" type="button" data-filter="ropa" aria-pressed="false">
+        <span class="category-icon"
+          ><svg
+            class="od-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z" /></svg></span
+        ><span><strong>Ropa</strong><small>Básicos versátiles</small></span>
+      </button>
+      <button class="category" type="button" data-filter="casa" aria-pressed="false">
+        <span class="category-icon"
+          ><svg
+            class="od-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="m3 11 9-7 9 7v9H3v-9Z" />
+            <path d="M9 20v-6h6v6" /></svg></span
+        ><span><strong>Casa</strong><small>Un lugar más tuyo</small></span>
+      </button>
+    </div>
+  </section>
+  <section class="wrap section hidden" id="catalogo" aria-labelledby="products-title">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Favoritos de la comunidad</span>
+        <h2 id="products-title">Piezas destacadas</h2>
+      </div>
+      <p id="resultCount" aria-live="polite">8 productos</p>
+    </div>
+    <div class="products" id="productGrid">
+      <article class="product od-tile" data-category="calzado">
+        <div class="product-visual visual-1">
+          <span class="product-flag">Más elegido</span
+          ><span class="shape shoe" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Zapatilla Alba</span
+          ><span class="product-category">Calzado · Blanco</span><span class="price">S/ 189</span>
+        </div>
+        <button class="add" type="button" data-product="Zapatilla Alba">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="accesorios">
+        <div class="product-visual visual-2">
+          <span class="shape tote" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Bolso Tana</span
+          ><span class="product-category">Accesorios · Lona</span><span class="price">S/ 129</span>
+        </div>
+        <button class="add" type="button" data-product="Bolso Tana">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="ropa">
+        <div class="product-visual visual-3">
+          <span class="product-flag">Nuevo</span
+          ><span class="shape shirt" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Camisa Río</span
+          ><span class="product-category">Ropa · Algodón</span><span class="price">S/ 159</span>
+        </div>
+        <button class="add" type="button" data-product="Camisa Río">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="accesorios">
+        <div class="product-visual visual-4">
+          <span class="shape glasses" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Lentes Sol</span
+          ><span class="product-category">Accesorios · Óptica</span
+          ><span class="price">S/ 119</span>
+        </div>
+        <button class="add" type="button" data-product="Lentes Sol">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="casa">
+        <div class="product-visual visual-5">
+          <span class="shape mug" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Taza Bruma</span
+          ><span class="product-category">Casa · Cerámica</span><span class="price">S/ 49</span>
+        </div>
+        <button class="add" type="button" data-product="Taza Bruma">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="casa">
+        <div class="product-visual visual-6">
+          <span class="shape lamp" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Lámpara Nube</span
+          ><span class="product-category">Casa · Metal</span><span class="price">S/ 219</span>
+        </div>
+        <button class="add" type="button" data-product="Lámpara Nube">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="accesorios">
+        <div class="product-visual visual-7">
+          <span class="shape bag" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Bandolera Marea</span
+          ><span class="product-category">Accesorios · Cuero</span><span class="price">S/ 249</span>
+        </div>
+        <button class="add" type="button" data-product="Bandolera Marea">Añadir a la bolsa</button>
+      </article>
+      <article class="product od-tile" data-category="accesorios">
+        <div class="product-visual visual-8">
+          <span class="shape earrings" aria-hidden="true"></span>
+        </div>
+        <div class="product-info">
+          <span class="product-name">Aros Círculo</span
+          ><span class="product-category">Accesorios · Plata</span><span class="price">S/ 89</span>
+        </div>
+        <button class="add" type="button" data-product="Aros Círculo">Añadir a la bolsa</button>
+      </article>
+    </div>
+  </section>
+  <section class="wrap benefits hidden" id="beneficios" aria-label="Beneficios de compra">
+    <div class="benefit">
+      <span class="benefit-icon"
+        ><svg
+          class="od-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <path d="M3 7h11v11H3zM14 11h4l3 3v4h-7z" />
+          <circle cx="7.5" cy="19" r="1.5" />
+          <circle cx="17.5" cy="19" r="1.5" /></svg
+      ></span>
+      <div><strong>Envíos a tu ritmo</strong><span>Despachamos a todo el Perú</span></div>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon"
+        ><svg
+          class="od-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="M3 10h18M7 15h4" /></svg
+      ></span>
+      <div><strong>Pago seguro</strong><span>Tus datos, siempre protegidos</span></div>
+    </div>
+    <div class="benefit">
+      <span class="benefit-icon"
+        ><svg
+          class="od-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <path d="M4 13v-2a8 8 0 0 1 16 0v2" />
+          <path d="M4 13H3v4a2 2 0 0 0 2 2h2v-6H4ZM20 13h1v4a2 2 0 0 1-2 2h-2v-6h3ZM12 19h3" /></svg
+      ></span>
+      <div>
+        <strong>Estamos para ayudarte</strong><span>Soporte cercano cuando lo necesites</span>
+      </div>
+    </div>
+  </section>
+  <section class="wrap newsletter hidden" aria-labelledby="newsletter-title">
+    <div>
+      <h2 id="newsletter-title">Una nota de vez en cuando</h2>
+      <p>Novedades, ideas y piezas nuevas. Sin llenar tu bandeja.</p>
+    </div>
+    <form class="newsletter-form" id="newsletterForm">
+      <label class="od-fill" for="email" hidden>Correo electrónico</label
+      ><input
+        id="email"
+        type="email"
+        placeholder="Tu correo electrónico"
+        aria-label="Tu correo electrónico"
+        required
+      /><button type="submit">Quiero recibirla</button>
+    </form>
+  </section>
+</main>
+<footer class="footer hidden">
+  <div class="wrap">
+    <div class="footer-main">
+      <div>
+        <a class="brand" href="#inicio"
+          ><span class="brand-mark" aria-hidden="true">N</span> NORTE</a
+        >
+        <p class="footer-note">Elegimos menos, cuidamos más. Objetos para acompañar tus días.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <strong>Explora</strong><a href="#catalogo">Catálogo</a
+          ><a href="#categorias">Categorías</a>
+        </div>
+        <div>
+          <strong>Te ayudamos</strong><a href="#beneficios">Envíos y cambios</a
+          ><a href="#beneficios">Contacto</a>
+        </div>
+        <div>
+          <strong>Encuéntranos</strong><a href="#inicio">Instagram</a><a href="#inicio">TikTok</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Norte. Marca de ejemplo.</span
+      ><span>Precios y promesas ilustrativos para esta propuesta.</span>
+    </div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
