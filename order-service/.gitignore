@@ -1,0 +1,11 @@
+# Build outputs
+/order-service
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Local environment files
+.env
+.env.*
+!.env.example

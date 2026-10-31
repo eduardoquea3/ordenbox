@@ -7,12 +7,12 @@ Branch: `feat/backend-service-scaffolds` | Delivery: `feature-branch-chain` | Ch
 - **S2 — Service purpose boundaries.** Use only the responsibilities stated in `backend.md`: catalog CRUD; auth registration and JWT; notification SQS consumer and query routes; API gateway reverse proxy; order REST API and SNS events; payment SQS consumer and query route. Do not invent production data models, credentials, external infrastructure, or complete business behavior. Minimal runnable scaffolding and a health/root response are assumptions to make startup verifiable.
 
 ## Tasks
-- **T1 [S1,S2]** Scaffold catalog-service (NestJS), inline; status: done; commit: pending; checks: `just --dry-run --justfile catalog-service/justfile`, `npm --prefix catalog-service run build`, and service launched via `just` with HTTP GET `/` returning `{"service":"catalog-service","status":"ok"}`.
-- **T2 [S1,S2]** Scaffold auth-service (FastAPI), inline; status: done; commit: pending; checks: launched using `just`; HTTP GET `/` returned `{"service":"auth-service","status":"ok"}`.
-- **T3 [S1,S2]** Scaffold notification-service (FastAPI), delegated to gentle-ai-worker; status: done; commit: pending; worker evidence: launch via `just` returned `{"service":"notification-service","status":"ok"}`.
-- **T4 [S1,S2]** Scaffold api-gateway (Go net/http), inline; status: done; commit: pending; checks: `go test ./...` and service launched via `just` with GET `/` returning `{"service":"api-gateway","status":"ok"}`; test covers catalog proxy path stripping.
-- **T5 [S1,S2]** Scaffold order-service (Go + Gin), inline; status: done; commit: pending; checks: `go test ./...` and launch via `just`, GET `/` returned `{"service":"order-service","status":"ok"}`.
-- **T6 [S1,S2]** Scaffold payment-service (Go + Gin), inline; status: done; commit: pending; checks: `go test ./...` and launch via `just`, GET `/` returned `{"service":"payment-service","status":"ok"}`.
+- **T1 [S1,S2]** Scaffold catalog-service (NestJS), inline; status: done; commit: 268ba62; checks: `just --dry-run --justfile catalog-service/justfile`, `npm --prefix catalog-service run build`, and service launched via `just` with HTTP GET `/` returning `{"service":"catalog-service","status":"ok"}`.
+- **T2 [S1,S2]** Scaffold auth-service (FastAPI), inline; status: done; commit: 268ba62; checks: launched using `just`; HTTP GET `/` returned `{"service":"auth-service","status":"ok"}`.
+- **T3 [S1,S2]** Scaffold notification-service (FastAPI), delegated to gentle-ai-worker; status: done; commit: 268ba62; worker evidence: launch via `just` returned `{"service":"notification-service","status":"ok"}`.
+- **T4 [S1,S2]** Scaffold api-gateway (Go net/http), inline; status: done; commit: 268ba62; checks: `go test ./...` and service launched via `just` with GET `/` returning `{"service":"api-gateway","status":"ok"}`; test covers catalog proxy path stripping.
+- **T5 [S1,S2]** Scaffold order-service (Go + Gin), inline; status: done; commit: 268ba62; checks: `go test ./...` and launch via `just`, GET `/` returned `{"service":"order-service","status":"ok"}`.
+- **T6 [S1,S2]** Scaffold payment-service (Go + Gin), inline; status: done; commit: 268ba62; checks: `go test ./...` and launch via `just`, GET `/` returned `{"service":"payment-service","status":"ok"}`.
 
 ## Log
 - **L1 (2026-10-30):** segun @backend.md faltaria crear los servicios para backend crea la estructura con las tecnologias usadas, para correr cada servicio usa justfiles para q dentro de cada servicio con el comando just se ejecute el servicio
