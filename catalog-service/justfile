@@ -1,0 +1,8 @@
+set dotenv-load := true
+
+port := env_var_or_default("PORT", "3001")
+
+# Install dependencies and start the service in watch mode.
+default:
+  npm install
+  npm run start:dev -- --port {{port}}

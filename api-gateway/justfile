@@ -1,0 +1,5 @@
+port := env_var_or_default("PORT", "8080")
+
+# Run the API gateway.
+default:
+  PORT={{port}} go run .

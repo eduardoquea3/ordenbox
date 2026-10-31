@@ -1,0 +1,5 @@
+port := env_var_or_default("PORT", "8004")
+
+# Run the payment service.
+default:
+  PORT={{port}} go run .
