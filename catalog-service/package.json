@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:dev": "nest start --watch",
-    "build": "nest build"
+    "start:dev": "node init && nest start --watch",
+    "build": "node init && nest build"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
